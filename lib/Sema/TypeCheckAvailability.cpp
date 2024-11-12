@@ -3720,10 +3720,8 @@ public:
                                CE->getResultType(), E->getLoc(), Where);
     }
     if (AbstractClosureExpr *closure = dyn_cast<AbstractClosureExpr>(E)) {
-      if (shouldWalkIntoClosure(closure)) {
-        walkAbstractClosure(closure);
-        return Action::SkipChildren(E);
-      }
+      walkAbstractClosure(closure);
+      return Action::SkipChildren(E);
     }
 
     if (auto CE = dyn_cast<ExplicitCastExpr>(E)) {
@@ -3949,10 +3947,6 @@ private:
                              ? MemberAccessContext::Writeback
                              : AccessContext;
     walkInContext(E->getSubExpr(), accessContext);
-  }
-
-  bool shouldWalkIntoClosure(AbstractClosureExpr *closure) const {
-    return true;
   }
 
   /// Walk an abstract closure expression, checking for availability
