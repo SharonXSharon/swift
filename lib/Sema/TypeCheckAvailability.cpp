@@ -3560,7 +3560,7 @@ bool diagnoseExplicitUnavailability(
 }
 
 namespace {
-class ExprAvailabilityWalker : public ASTWalker {
+class ExprAvailabilityWalker : public BaseDiagnosticWalker {
   /// Models how member references will translate to accessor usage. This is
   /// used to diagnose the availability of individual accessors that may be
   /// called by the expression being checked.
@@ -3594,11 +3594,6 @@ class ExprAvailabilityWalker : public ASTWalker {
 public:
   explicit ExprAvailabilityWalker(const ExportContext &Where)
     : Context(Where.getDeclContext()->getASTContext()), Where(Where) {}
-
-  MacroWalking getMacroWalkingBehavior() const override {
-    // Expanded source should be type checked and diagnosed separately.
-    return MacroWalking::Arguments;
-  }
 
   PreWalkAction walkToArgumentPre(const Argument &Arg) override {
     // Arguments should be walked in their own member access context which
